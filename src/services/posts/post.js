@@ -20,14 +20,19 @@ console.log("this is the current folder path", folderpostsPath)
 const postsDb = join(folderpostsPath, "postsDB.json")
 
 
+
 // GET METHOD
 // =============================
 
 postsRouter.get("/", (req, res) => {
+    console.log("URL: ",
+        import.meta.url)
+    console.log("CURRENT FILE PATH: ", folderpostsPath)
+
     const postsCurrentFile = fs.readFileSync(postsDb)
-    console.log("file content:",
-        JSON.parse(postsCurrentFile))
+
     const postsArray = JSON.parse(postsCurrentFile)
+
     res.send(postsArray)
 
 })
@@ -36,7 +41,9 @@ postsRouter.get("/", (req, res) => {
 // GET METHOD specific ID
 // =============================
 postsRouter.get("/:userid", (req, res) => {
-    const postsCurrentFile = fs.readFileSync(postsDb)
+    const postsCurrentFile = JSON.parse(fs.readFileSync(postsDb))
+    const post = postsCurrentFile.find(p => p.id === req.params.userid)
+    res.send(post)
 })
 
 
