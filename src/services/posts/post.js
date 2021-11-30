@@ -1,4 +1,5 @@
 import fs from 'fs'
+import express from 'express'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import uniqid from "uniqid"
@@ -22,7 +23,7 @@ const postsDb = join(folderpostsPath, "postsDB.json")
 // GET METHOD
 // =============================
 
-userRouter.get("/", (req, res) => {
+postsRouter.get("/", (req, res) => {
     const postsCurrentFile = fs.readFileSync(postsDb)
     console.log("file content:",
         JSON.parse(postsCurrentFile))
@@ -34,23 +35,24 @@ userRouter.get("/", (req, res) => {
 
 // GET METHOD specific ID
 // =============================
-userRouter.get("/:userid", (req, res) => {
-            const postsCurrentFile = fs.readFileSync(postsDb)
+postsRouter.get("/:userid", (req, res) => {
+    const postsCurrentFile = fs.readFileSync(postsDb)
+})
 
 
 
 
-            // POST METHOD
-            // =============================
+// POST METHOD
+// =============================
 
-            // PUSH METHOD
-            // =============================
-
-
-            // DELETE METHOD
-            // =============================
+// PUSH METHOD
+// =============================
 
 
+// DELETE METHOD
+// =============================
 
 
-            export default postsRouter
+
+
+export default postsRouter
