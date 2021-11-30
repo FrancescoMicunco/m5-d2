@@ -52,7 +52,7 @@ postsRouter.get("/:userid", (req, res) => {
 // POST METHOD
 // =============================
 
-// PUSH METHOD
+// PUT METHOD
 // =============================
 
 

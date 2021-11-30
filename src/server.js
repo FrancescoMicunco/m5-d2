@@ -10,4 +10,5 @@ server.use(express.json())
 
 
 server.use("/posts", postsRouter)
+console.table(listEndpoints(server))
 server.listen(port, () => {})
