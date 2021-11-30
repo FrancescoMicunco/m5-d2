@@ -4,15 +4,19 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "nodemon -e js ./src/server.js"
     },
     "type": "module",
-    "dev": "nodemon -e js ./srv/server.js",
     "keywords": [],
-    "author": "",
+    "author": "Francesco Micunco",
     "license": "ISC",
     "devDependencies": {
         "nodemon": "^2.0.15"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/FrancescoMicunco/m5-d2"
     },
     "dependencies": {
         "express": "^4.17.1",
