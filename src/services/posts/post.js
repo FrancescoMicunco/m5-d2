@@ -59,7 +59,12 @@ postsRouter.get("/:userid", (req, res) => {
 // DELETE METHOD
 // =============================
 
-
+postsRouter.delete("/:userid", (req, res) => {
+    const postsCurrentFile = JSON.parse(fs.readFileSync(postsDb))
+    const remainingPost = postsCurrentFile.filter(p => p.id !== req.params.userid)
+    fs.writeFileSync(postsDb, JSON.stringify(remainingPost))
+    res.status(204).send()
+})
 
 
 export default postsRouter
