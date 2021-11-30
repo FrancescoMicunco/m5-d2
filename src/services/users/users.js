@@ -71,7 +71,7 @@ usersRouter.put("/:userid", (req, res) => {
 
     const findIndex = contentFileArray.findIndex(e => e.id === req.params.userid)
     const updateUser = {
-        ...users[findIndex],
+        ...contentFileArray[findIndex],
         ...req.body
     }
 
