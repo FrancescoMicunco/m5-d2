@@ -26,7 +26,8 @@ const userPath = join(currentFolderPath, "usersDb.json")
 
 usersRouter.get("/", (req, res) => {
     const contentFile = fs.readFileSync(userPath) //array in machine language
-    const contentFileArray = JSON.parse(contentFile)
+    const contentToString = contentFile.toString()
+    const contentFileArray = JSON.parse(contentToString)
     res.send(contentFileArray)
 })
 
@@ -43,9 +44,13 @@ usersRouter.get("/:userid", (req, res) => {
 // POST METHOD
 // =============================
 usersRouter.post("/", (req, res) => {
-    const contentFile = fs.readFileSync(userPath)
+    const contentFile = fs.readFileSync(userPath) //array in machine language
+    const contentToString = contentFile.toString()
+    const contentFileArray = JSON.parse(contentToString)
+
+    const { name, surname, email, date_of_birt } = req.body;
     const newUser = {
-        Id: uniqid(),
+        id: uniqid(),
         name,
         surname,
         email,
@@ -55,10 +60,10 @@ usersRouter.post("/", (req, res) => {
         avatar: `https://ui-avatars.com/api/?name=${name}+${surname}`
     }
     console.log(newUser)
-    contentFile.push(newUser)
+    contentFileArray.push(newUser)
     fs.writeFileSync(userPath, JSON.stringify(contentFile))
 
-    res.status(201).send({ id: newUser.Id })
+    res.status(201).send({ id: newUser.id })
 
 })
 
