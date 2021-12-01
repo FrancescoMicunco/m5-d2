@@ -33,7 +33,7 @@ blogpostsRouter.get("/", (req, res, next) => {
 blogpostsRouter.get("/:id", (req, res, next) => {
     try {
         const postsPath = getPost()
-        const post = postsPath.find(p => e.id === req.params.id)
+        const post = postsPath.find(p => p.id === req.params.id)
         if (post) {
             res.send(post)
         } else {
@@ -52,25 +52,25 @@ blogpostsRouter.post("/", (req, res, next) => {
         const postsPath = getPost()
         const newPost = {
             "_id": uniqid(),
-            "category": "ARTICLE CATEGORY",
-            "title": "",
-            "cover": "",
+            "category": "req.body.category",
+            "title": "req.body.title",
+            "cover": "req.body.cover",
             "readTime": {
                 "value": 2,
                 "unit": "minute"
             },
             "author": {
-                "name": "AUTHOR AVATAR NAME",
-                "avatar": "AUTHOR AVATAR LINK"
+                "name": "req.body.user.name",
+                "avatar": "req.body.user.avatar"
             },
             "content": "HTML",
             "createdAt": new Date()
         }
         postsPath.push(newPost)
         writePost(postsPath)
-        res.status(201).send({
-            id: newPost._id
-        })
+        res.status(201).send({ id: newPost._id }
+
+        )
 
     } catch (error) {
         next(error)

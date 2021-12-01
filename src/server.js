@@ -8,7 +8,7 @@ import {
     unauthorized,
     notFound,
     genericErr
-} from './errorHandler'
+} from './errorHandler.js'
 
 const server = express()
 

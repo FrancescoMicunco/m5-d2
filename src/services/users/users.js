@@ -12,7 +12,7 @@ const userPath = join(dirname(fileURLToPath(
     import.meta.url)), "usersDb.json")
 
 // get user
-const getUser = () => { JSON.parse(fs.readFileSync(userPath)) }
+const getUser = () => JSON.parse(fs.readFileSync(userPath))
 
 // write user
 
