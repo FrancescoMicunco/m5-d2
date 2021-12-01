@@ -24,7 +24,7 @@ blogpostsRouter.get("/", (req, res, next) => {
         const postsPath = getPost()
         res.send(postsPath)
     } catch (error) {
-        next(error)
+        next(createHttpError(400, 'Bad Request!'))
     }
 })
 
@@ -46,7 +46,7 @@ blogpostsRouter.post("/", (req, res, next) => {
         })
 
     } catch (error) {
-        next(error)
+        next(createHttpError(401, 'Unauthorized!'))
     }
 })
 
@@ -65,7 +65,7 @@ blogpostsRouter.get("/:id", (req, res, next) => {
         }
 
     } catch (error) {
-        next(error)
+        next(createHttpError(404, 'Not Found!'))
     }
 })
 
@@ -87,7 +87,7 @@ blogpostsRouter.put("/:id", (req, res, next) => {
         res.send(postsPath[findIndex])
 
     } catch (error) {
-        next(error)
+        next(createHttpError(400, 'Bad Request!'))
     }
 })
 
@@ -102,7 +102,7 @@ blogpostsRouter.delete("/:id", (req, res, next) => {
 
     }
 
-    next(error)
+    next(createHttpError(400, 'Bad Request!'))
 })
 
 
