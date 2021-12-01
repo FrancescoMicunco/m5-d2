@@ -4,6 +4,11 @@ import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import uniqid from "uniqid"
 import createHttpError from "http-errors"
+import {
+    postValidation
+} from './validation.js'
+import { validationResult } from 'express-validator'
+
 
 const blogpostsRouter = express.Router()
 
@@ -18,40 +23,54 @@ const getPost = () => JSON.parse(fs.readFileSync(getPosts))
 
 const writePost = content => fs.writeFileSync(getPosts, JSON.stringify(content))
 
-// get
+// =================  GET ==============
+// =====================================
+
+
 blogpostsRouter.get("/", (req, res, next) => {
     try {
+
         const postsPath = getPost()
         res.send(postsPath)
+
+
     } catch (error) {
         next(createHttpError(400, 'Bad Request!'))
     }
 })
 
+// =================  POST ==============
+// =====================================
 
-// post
-blogpostsRouter.post("/", (req, res, next) => {
+
+blogpostsRouter.post("/", postValidation, (req, res, next) => {
     try {
-        const postsPath = getPost()
-        console.log(req.body)
-        const newPost = {
-            "_id": uniqid(),
-            ...req.body,
-            "createdAt": new Date()
+        const errorsList = validationResult(req)
+        if (!errorsList.isEmpty()) {
+            next(createHttpError(400))
+        } else {
+            const postsPath = getPost()
+            console.log(req.body)
+            const newPost = {
+                "_id": uniqid(),
+                ...req.body,
+                "createdAt": new Date()
+            }
+            postsPath.push(newPost)
+            writePost(postsPath)
+            res.status(201).send({
+                id: newPost._id
+            })
         }
-        postsPath.push(newPost)
-        writePost(postsPath)
-        res.status(201).send({
-            id: newPost._id
-        })
-
     } catch (error) {
         next(createHttpError(401, 'Unauthorized!'))
     }
 })
 
+// =================  GET + ID ==============
+// ==========================================
 
-// get + id
+
 blogpostsRouter.get("/:id", (req, res, next) => {
     try {
         const postsPath = getPost()
@@ -69,10 +88,8 @@ blogpostsRouter.get("/:id", (req, res, next) => {
     }
 })
 
-
-
-// put
-
+// =================  PUT ==============
+// =====================================
 blogpostsRouter.put("/:id", (req, res, next) => {
     try {
         const postsPath = getPost()
@@ -91,7 +108,10 @@ blogpostsRouter.put("/:id", (req, res, next) => {
     }
 })
 
-// delete
+// =================  DELETE ==============
+// =====================================
+
+
 blogpostsRouter.delete("/:id", (req, res, next) => {
     try {
         const postsPath = getPost()
