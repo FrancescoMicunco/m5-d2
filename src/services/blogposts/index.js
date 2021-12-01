@@ -8,9 +8,10 @@ const blogpostsRouter = express.Router()
 
 const getPosts = join(dirname(fileURLToPath(
     import.meta.url)), "postsDB.json")
+console.log(getPosts)
 
 // read post
-const getPost = () => { JSON.parse(fs.readFileSync(getPosts)) }
+const getPost = () => JSON.parse(fs.readFileSync(getPosts))
 
 // write post
 
@@ -62,12 +63,12 @@ blogpostsRouter.post("/", (req, res, next) => {
                 "avatar": "AUTHOR AVATAR LINK"
             },
             "content": "HTML",
-            "createdAt": "NEW DATE"
+            "createdAt": new Date()
         }
         postsPath.push(newPost)
         writePost(postsPath)
         res.status(201).send({
-            id: newPost.id
+            id: newPost._id
         })
 
     } catch (error) {
@@ -75,25 +76,33 @@ blogpostsRouter.post("/", (req, res, next) => {
     }
 })
 
-
-
 // put
 
 blogpostsRouter.put("/:id", (req, res, next) => {
     try {
         const postsPath = getPost()
+        const findIndex = postsPath.findIndex(e => e.id === req.params.userid)
+        const postToModify = postsPath[findIndex]
+        const postUpdated = req.body
+        const updatePost = {
+            ...postToModify,
+            ...postUpdated
+        }
+        postsPath[index] = updatePost
+        writePost(postsPath)
+        res.send(updatePost)
+
     } catch (error) {
         console.log("something wrong")
     }
-
-
 })
-
 
 // delete
 blogpostsRouter.delete("/:id", (req, res, next) => {
     try {
         const postsPath = getPost()
+        postsPath.filter(e => e.id !== req.params.userid)
+        res.status(204).send()
     } catch (error) {
 
     }
