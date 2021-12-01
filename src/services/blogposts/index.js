@@ -10,26 +10,69 @@ const getPosts = join(dirname(fileURLToPath(
     import.meta.url)), "postsDB.json")
 
 // read post
-const getUser = () => { JSON.parse(fs.readFileSync(getPosts)) }
+const getPost = () => { JSON.parse(fs.readFileSync(getPosts)) }
 
 // write post
 
-const writeUser = content => fs.writeFileSync(getPosts, JSON.stringify(content))
+const writePost = content => fs.writeFileSync(getPosts, JSON.stringify(content))
 
 // get
 blogpostsRouter.get("/", (req, res, next) => {
-    console.log("this is the array")
+    try {
+        const postsPath = getPost()
+        res.send(postsPath)
+    } catch (error) {
+        console.log("something wrong")
+    }
+
 })
 
 // get + id
 blogpostsRouter.get("/:id", (req, res, next) => {
-    console.log("this is the array")
+    try {
+        const postsPath = getPost()
+        const post = postsPath.find(p => e.id === req.params.id)
+        if (post) {
+            res.send(post)
+        } else {
+            res.send("")
+        }
+
+    } catch (error) {
+        console.log("something wrong")
+    }
 })
 
 
 // post
 blogpostsRouter.post("/", (req, res, next) => {
-    console.log("this is the array")
+    try {
+        const postsPath = getPost()
+        const newPost = {
+            "_id": uniqid(),
+            "category": "ARTICLE CATEGORY",
+            "title": "",
+            "cover": "",
+            "readTime": {
+                "value": 2,
+                "unit": "minute"
+            },
+            "author": {
+                "name": "AUTHOR AVATAR NAME",
+                "avatar": "AUTHOR AVATAR LINK"
+            },
+            "content": "HTML",
+            "createdAt": "NEW DATE"
+        }
+        postsPath.push(newPost)
+        writePost(postsPath)
+        res.status(201).send({
+            id: newPost.id
+        })
+
+    } catch (error) {
+        console.log("something wrong")
+    }
 })
 
 
@@ -37,17 +80,26 @@ blogpostsRouter.post("/", (req, res, next) => {
 // put
 
 blogpostsRouter.put("/:id", (req, res, next) => {
-    console.log("this is the array")
+    try {
+        const postsPath = getPost()
+    } catch (error) {
+        console.log("something wrong")
+    }
+
+
 })
 
 
 // delete
 blogpostsRouter.delete("/:id", (req, res, next) => {
-    console.log("this is the array")
+    try {
+        const postsPath = getPost()
+    } catch (error) {
+
+    }
+
+    console.log("something wrong")
 })
-
-
-
 
 
 export default blogpostsRouter

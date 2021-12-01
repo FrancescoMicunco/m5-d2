@@ -15,5 +15,5 @@ server.use("/users", usersRouter)
 server.use("/posts", blogpostsRouter)
 
 console.table(listEndpoints(server))
-console.log(port)
+
 server.listen(port, () => {})
