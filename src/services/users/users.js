@@ -7,91 +7,111 @@ import uniqid from "uniqid"
 const usersRouter = express.Router()
 
 
-// take file path
-const currentUserPath = fileURLToPath(
-    import.meta.url)
-console.log(
-    import.meta.url)
+//  access db file
+const userPath = join(dirname(fileURLToPath(
+    import.meta.url)), "usersDb.json")
 
-// take folder path
-const currentFolderPath = dirname(currentUserPath)
-console.log(currentFolderPath)
-    //  access db file
-const userPath = join(currentFolderPath, "usersDb.json")
+// get user
+const getUser = () => { JSON.parse(fs.readFileSync(userPath)) }
 
+// write user
+
+const writeUser = content => fs.writeFileSync(userPath, JSON.stringify(content))
 
 
 // GET METHOD
 // =============================
 
-usersRouter.get("/", (req, res) => {
-    const contentFile = fs.readFileSync(userPath) //array in machine language
-    const contentToString = contentFile.toString()
-    const contentFileArray = JSON.parse(contentToString)
-    res.send(contentFileArray)
+usersRouter.get("/", (req, res, next) => {
+    try {
+        const usersArray = getUser()
+        res.send(usersArray)
+    } catch (error) {
+        console.log("there is an error")
+    }
+
 })
 
 // GET METHOD specific ID
 // =============================
-usersRouter.get("/:userid", (req, res) => {
-    const contentFile = fs.readFileSync(userPath) //array in machine language
-    const contentFileArray = JSON.parse(contentFile)
-    const user = contentFileArray.find(e => e.id === req.params.userId)
-    res.send(user)
+usersRouter.get("/:userid", (req, res, next) => {
+    try {
+        const usersArray = getUser()
+        const user = usersArray.find(e => e.id === req.params.userid)
+        if (user) {
+            res.send(user)
+        } else {
+            console.log("user doesn't exist")
+        }
+
+    } catch (error) {
+        console.log("there is an error")
+    }
 })
 
 
 // POST METHOD
 // =============================
-usersRouter.post("/", (req, res) => {
-    const contentFile = fs.readFileSync(userPath) //array in machine language
-    const contentToString = contentFile.toString()
-    const contentFileArray = JSON.parse(contentToString)
+usersRouter.post("/", (req, res, next) => {
+    const usersArray = getUser()
+    try {
+        const { name, surname, email, date_of_birt } = req.body;
+        const newUser = {
+            id: uniqid(),
+            name,
+            surname,
+            email,
+            date_of_birt,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            avatar: `https://ui-avatars.com/api/?name=${name}+${surname}`
+        }
+        console.log(newUser)
+        usersArray.push(newUser)
+        writeUser(usersArray)
+        res.status(201).send({
+            id: newUser.id
+        })
+    } catch (error) {
 
-    const { name, surname, email, date_of_birt } = req.body;
-    const newUser = {
-        id: uniqid(),
-        name,
-        surname,
-        email,
-        date_of_birt,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        avatar: `https://ui-avatars.com/api/?name=${name}+${surname}`
     }
-    console.log(newUser)
-    contentFileArray.push(newUser)
-    fs.writeFileSync(userPath, JSON.stringify(contentFile))
-
-    res.status(201).send({ id: newUser.id })
-
 })
 
 
 // PUT METHOD
 // =============================
-usersRouter.put("/:userid", (req, res) => {
-    const contentFile = fs.readFileSync(userPath)
-    const contentFileArray = JSON.parse(contentFile)
+usersRouter.put("/:userid", (req, res, next) => {
+    const usersArray = getUser()
+    try {
+        const findIndex = contentFileArray.findIndex(e => e.id === req.params.userid)
+        const userToModify = usersArray[findIndex]
+        const userUpdated = req.body
+        const updateUser = {
+            ...userToModify,
+            ...userUpdated
+        }
+        usersArray[index] = updateUser
+        writeUser(usersArray)
+        res.send(updateUser)
+    } catch (error) {
+        console.log("there is an error")
 
-    const findIndex = contentFileArray.findIndex(e => e.id === req.params.userid)
-    const updateUser = {
-        ...contentFileArray[findIndex],
-        ...req.body
     }
 
-    contentFileArray[index] = updateUser
-    fs.writeFileSync(userPath, JSON.stringify(contentFile))
-    res.send(updateUser)
 })
 
 
 // DELETE METHOD
 // =============================
-usersRouter.delete("/:userid", (req, res) => {
-    const contentFile = fs.readFileSync(userPath) //array in machine language
-    const contentFileArray = JSON.parse(contentFile)
-    contentFileArray.filter(e => e.id !== req.params.userid)
+usersRouter.delete("/:userid", (req, res, next) => {
+    try {
+        const usersArray = getUser()
+        usersArray.filter(e => e.id !== req.params.userid)
+        res.status(204).send()
+    } catch (error) {
+        console.log("there is an error")
+    }
+
 
 })
 
