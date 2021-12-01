@@ -26,8 +26,30 @@ blogpostsRouter.get("/", (req, res, next) => {
     } catch (error) {
         next(error)
     }
-
 })
+
+
+// post
+blogpostsRouter.post("/", (req, res, next) => {
+    try {
+        const postsPath = getPost()
+        console.log(req.body)
+        const newPost = {
+            "_id": uniqid(),
+            ...req.body,
+            "createdAt": new Date()
+        }
+        postsPath.push(newPost)
+        writePost(postsPath)
+        res.status(201).send({
+            id: newPost._id
+        })
+
+    } catch (error) {
+        next(error)
+    }
+})
+
 
 // get + id
 blogpostsRouter.get("/:id", (req, res, next) => {
@@ -46,52 +68,21 @@ blogpostsRouter.get("/:id", (req, res, next) => {
 })
 
 
-// post
-blogpostsRouter.post("/", (req, res, next) => {
-    try {
-        const postsPath = getPost()
-        const newPost = {
-            "_id": uniqid(),
-            "category": "req.body.category",
-            "title": "req.body.title",
-            "cover": "req.body.cover",
-            "readTime": {
-                "value": 2,
-                "unit": "minute"
-            },
-            "author": {
-                "name": "req.body.user.name",
-                "avatar": "req.body.user.avatar"
-            },
-            "content": "HTML",
-            "createdAt": new Date()
-        }
-        postsPath.push(newPost)
-        writePost(postsPath)
-        res.status(201).send({ id: newPost._id }
-
-        )
-
-    } catch (error) {
-        next(error)
-    }
-})
 
 // put
 
 blogpostsRouter.put("/:id", (req, res, next) => {
     try {
         const postsPath = getPost()
-        const findIndex = postsPath.findIndex(e => e.id === req.params.userid)
-        const postToModify = postsPath[findIndex]
-        const postUpdated = req.body
-        const updatePost = {
-            ...postToModify,
-            ...postUpdated
+        const findIndex = postsPath.findIndex(e => e.id === req.params.id)
+        console.log(findIndex)
+        postsPath[findIndex] = {
+            ...postsPath[findIndex],
+            ...req.body,
+            updatedAt: new Date()
         }
-        postsPath[index] = updatePost
         writePost(postsPath)
-        res.send(updatePost)
+        res.send(postsPath[findIndex])
 
     } catch (error) {
         next(error)
@@ -102,7 +93,8 @@ blogpostsRouter.put("/:id", (req, res, next) => {
 blogpostsRouter.delete("/:id", (req, res, next) => {
     try {
         const postsPath = getPost()
-        postsPath.filter(e => e.id !== req.params.userid)
+        const indexDeletingPost = postsPath.filter(e => e.id !== req.params.id)
+        writePost(indexDeletingPost)
         res.status(204).send()
     } catch (error) {
 
