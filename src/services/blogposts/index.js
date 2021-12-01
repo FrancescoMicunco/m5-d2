@@ -3,6 +3,7 @@ import express from 'express'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import uniqid from "uniqid"
+import createHttpError from "http-errors"
 
 const blogpostsRouter = express.Router()
 
@@ -23,7 +24,7 @@ blogpostsRouter.get("/", (req, res, next) => {
         const postsPath = getPost()
         res.send(postsPath)
     } catch (error) {
-        console.log("something wrong")
+        next(error)
     }
 
 })
@@ -40,7 +41,7 @@ blogpostsRouter.get("/:id", (req, res, next) => {
         }
 
     } catch (error) {
-        console.log("something wrong")
+        next(error)
     }
 })
 
@@ -72,7 +73,7 @@ blogpostsRouter.post("/", (req, res, next) => {
         })
 
     } catch (error) {
-        console.log("something wrong")
+        next(error)
     }
 })
 
@@ -93,7 +94,7 @@ blogpostsRouter.put("/:id", (req, res, next) => {
         res.send(updatePost)
 
     } catch (error) {
-        console.log("something wrong")
+        next(error)
     }
 })
 
@@ -107,7 +108,7 @@ blogpostsRouter.delete("/:id", (req, res, next) => {
 
     }
 
-    console.log("something wrong")
+    next(error)
 })
 
 
