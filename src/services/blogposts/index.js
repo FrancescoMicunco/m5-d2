@@ -1,39 +1,24 @@
-import fs from 'fs'
 import express from 'express'
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
 import uniqid from "uniqid"
 import createHttpError from "http-errors"
 import { postValidation } from './validation.js'
 import { validationResult } from 'express-validator'
-
+import { getPost, writePost } from '../../lib/functions.js'
 
 const blogpostsRouter = express.Router()
 
-const getPosts = join(dirname(fileURLToPath(
-    import.meta.url)), "postsDB.json")
-console.log(getPosts)
-
-// read post
-const getPost = () => JSON.parse(fs.readFileSync(getPosts))
-
-// write post
-
-const writePost = content => fs.writeFileSync(getPosts, JSON.stringify(content))
 
 // =================  GET ==============
 // =====================================
 
 
-blogpostsRouter.get("/", (req, res, next) => {
+blogpostsRouter.get("/", async(req, res, next) => {
     try {
-
-        const postsPath = getPost()
+        const postsPath = await getPost()
+        console.log(postsPath)
         res.send(postsPath)
-
-
     } catch (error) {
-        next(createHttpError(400, 'Bad Request!'))
+        next(error)
     }
 })
 
@@ -41,13 +26,13 @@ blogpostsRouter.get("/", (req, res, next) => {
 // =====================================
 
 
-blogpostsRouter.post("/", postValidation, (req, res, next) => {
+blogpostsRouter.post("/", postValidation, async(req, res, next) => {
     try {
         const errorsList = validationResult(req)
         if (!errorsList.isEmpty()) {
-            next(createHttpError(400))
+            next(createHttpError(400, 'Bad Request!'))
         } else {
-            const postsPath = getPost()
+            const postsPath = await getPost()
             console.log(req.body)
             const newPost = {
                 "_id": uniqid(),
@@ -61,7 +46,7 @@ blogpostsRouter.post("/", postValidation, (req, res, next) => {
             })
         }
     } catch (error) {
-        next(createHttpError(401, 'Unauthorized!'))
+        next(error)
     }
 })
 
@@ -69,28 +54,28 @@ blogpostsRouter.post("/", postValidation, (req, res, next) => {
 // ==========================================
 
 
-blogpostsRouter.get("/:id", (req, res, next) => {
+blogpostsRouter.get("/:id", async(req, res, next) => {
     try {
-        const postsPath = getPost()
+        const postsPath = await getPost()
         console.log(postsPath)
         const post = postsPath.find(p => p._id === req.params.id)
         console.log(post)
         if (post) {
             res.send(post)
         } else {
-            res.send("")
+            next(createHttpError(404, 'Not found!'))
         }
 
     } catch (error) {
-        next(createHttpError(404, 'Not Found!'))
+        next(error)
     }
 })
 
 // =================  PUT ==============
 // =====================================
-blogpostsRouter.put("/:id", (req, res, next) => {
+blogpostsRouter.put("/:id", async(req, res, next) => {
     try {
-        const postsPath = getPost()
+        const postsPath = await getPost()
         const findIndex = postsPath.findIndex(e => e._id === req.params.id)
         console.log(findIndex)
         postsPath[findIndex] = {
@@ -102,7 +87,7 @@ blogpostsRouter.put("/:id", (req, res, next) => {
         res.send(postsPath[findIndex])
 
     } catch (error) {
-        next(createHttpError(400, 'Bad Request!'))
+        next(error)
     }
 })
 
@@ -110,9 +95,9 @@ blogpostsRouter.put("/:id", (req, res, next) => {
 // =====================================
 
 
-blogpostsRouter.delete("/:id", (req, res, next) => {
+blogpostsRouter.delete("/:id", async(req, res, next) => {
     try {
-        const postsPath = getPost()
+        const postsPath = await getPost()
         const indexDeletingPost = postsPath.filter(e => e._id !== req.params.id)
         writePost(indexDeletingPost)
         res.status(204).send()
@@ -120,7 +105,7 @@ blogpostsRouter.delete("/:id", (req, res, next) => {
 
     }
 
-    next(createHttpError(400, 'Bad Request!'))
+    next(error)
 })
 
 
