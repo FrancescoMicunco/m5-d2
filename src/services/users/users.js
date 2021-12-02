@@ -1,11 +1,26 @@
 import express from 'express'
-import { getUser, writeUser } from '../../lib/functions.js'
+import fs from 'fs'
+import {
+    getUser,
+    writeUser,
+    parseImage,
+    upload
+} from '../../lib/functions.js'
+import {
+    fileURLToPath
+} from "url";
+import {
+    dirname,
+    join
+} from "path";
 import createHttpError from "http-errors"
 import { postValidation } from '../../lib/validation.js '
 import { validationResult } from 'express-validator'
 import uniqid from "uniqid"
 import multer from 'multer'
 import { saveAvatar } from '../../lib/functions.js'
+
+
 const usersRouter = express.Router()
 
 
@@ -17,20 +32,24 @@ const usersRouter = express.Router()
 usersRouter.get("/", async(req, res, next) => {
     try {
         const usersArray = await getUser()
+        console.log("this is usersArray path", usersArray)
         res.send(usersArray)
     } catch (error) {
-        next(error)
+        res.send(500).send({
+            message: error.message
+        })
     }
+    next(error)
 
 })
 
 // GET METHOD specific ID
 // =============================
-usersRouter.get("/:userid", async(req, res, next) => {
+usersRouter.get("/:id", async(req, res, next) => {
     try {
         const usersArray = await getUser()
         console.log(usersArray)
-        const user = usersArray.find(e => e._id === req.params.userid)
+        const user = usersArray.find(e => e._id === req.params.id)
         if (user) {
             res.send(user)
         } else {
@@ -38,66 +57,86 @@ usersRouter.get("/:userid", async(req, res, next) => {
         }
 
     } catch (error) {
-        next(error)
-    }
-})
-
-
-// POST METHOD
-// =============================
-usersRouter.post("/", postValidation, async(req, res, next) => {
-    const usersArray = getUser()
-    try {
-        const errorsList = validationResult(req)
-        if (!errorsList.isEmpty()) {
-            next(createHttpError(400, 'Bad Request!'))
-        } else {
-
-            const newUser = {
-                "_id": uniqid(),
-                ...req.body,
-                "createdAt": new Date(),
-                "updatedAt": new Date(),
-            }
-            usersArray.push(newUser)
-            writeUser(usersArray)
-            res.status(201).send({
-                id: newUser.id
-            })
-        }
-    } catch (error) {
-
-    }
-})
-
-// POST METHOD for AVATAR
-// =============================
-usersRouter.post("/:id/upLoadAvatar", multer().single("profileAvatar"), async(req, res, next) => {
-    try {
-        await saveAvatar(req.file.originalname, req.file.buffer)
-        res.status(201).send("OK")
-    } catch (error) {
 
     }
     next(error)
 })
 
+
+// POST METHOD
+// =============================
+usersRouter.post("/", async(req, res, next) => {
+    try {
+        const usersArray = await getUser()
+
+        const newUser = {
+            "_id": uniqid(),
+            ...req.body,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
+        }
+        usersArray.push(newUser)
+        writeUser(usersArray)
+        res.status(201).send(
+            newUser
+        )
+
+    } catch (error) {
+        res.send(500).send({
+            message: error.message
+        })
+    }
+    next(error)
+})
+
+
+// PUT METHOD for AVATAR
+// =============================
+usersRouter.put("/:id/upLoadAvatar", parseImage.single("profileAvatar"), upload, async(req, res, next) => {
+
+    try {
+        const usersArray = await getUser()
+        const findIndex = contentFileArray.findIndex(e => e.id === req.params.id)
+        if (findIndex == -1) {
+            res.status(404).send({
+                message: `Author with ${req.params.id} is not found!`
+            });
+        } else {
+            const changedUser = usersArray[findIndex]
+            changedUser = {
+                ...usersArray[findIndex],
+                avatar: req.file,
+                id: req.params.id,
+                updatedAt: new Date()
+            }
+            writeUser(usersArray)
+            res.send(changedUser)
+        }
+    } catch (error) {}
+    next(error)
+})
+
 // PUT METHOD
 // =============================
-usersRouter.put("/:userid", async(req, res, next) => {
+usersRouter.put("/:id", async(req, res, next) => {
     const usersArray = await getUser()
     try {
-        const findIndex = contentFileArray.findIndex(e => e.id === req.params.userid)
-        usersArray[findIndex] = {
-            ...usersArray[findIndex],
-            ...req.body,
-            updatedAt: new Date()
+        const findIndex = contentFileArray.findIndex(e => e.id === req.params.id)
+        if (findIndex == -1) {
+            res.status(404)
+        } else {
+            usersArray[findIndex] = {
+                ...usersArray[findIndex],
+                ...req.body,
+                updatedAt: new Date()
+            }
+            writeUser(usersArray)
+            res.send(updateUser[findIndex])
         }
-        writeUser(usersArray)
-        res.send(updateUser[findIndex])
     } catch (error) {
-        next(error)
+
     }
+    next(error)
 })
 
 

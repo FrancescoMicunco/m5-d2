@@ -15,7 +15,8 @@ const blogpostsRouter = express.Router()
 blogpostsRouter.get("/", async(req, res, next) => {
     try {
         const postsPath = await getPost()
-        console.log(postsPath)
+        console.log("this is usersArray path",
+            postsPath)
         res.send(postsPath)
     } catch (error) {
         next(error)
