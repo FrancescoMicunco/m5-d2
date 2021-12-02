@@ -4,7 +4,8 @@ import createHttpError from "http-errors"
 import { postValidation } from '../../lib/validation.js '
 import { validationResult } from 'express-validator'
 import uniqid from "uniqid"
-
+import multer from 'multer'
+import { saveAvatar } from '../../lib/functions.js'
 const usersRouter = express.Router()
 
 
@@ -51,15 +52,13 @@ usersRouter.post("/", postValidation, async(req, res, next) => {
         if (!errorsList.isEmpty()) {
             next(createHttpError(400, 'Bad Request!'))
         } else {
-            const { name, surname, email, date_of_birt } = req.body;
-            const newUser = {
-                id: uniqid(),
-                ...req.body,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                avatar: `https://ui-avatars.com/api/?name=${name}+${surname}`
-            }
 
+            const newUser = {
+                "_id": uniqid(),
+                ...req.body,
+                "createdAt": new Date(),
+                "updatedAt": new Date(),
+            }
             usersArray.push(newUser)
             writeUser(usersArray)
             res.status(201).send({
@@ -70,6 +69,21 @@ usersRouter.post("/", postValidation, async(req, res, next) => {
 
     }
 })
+
+// POST METHOD for AVATAR
+// =============================
+usersRouter.post("/:id/upLoadAvatar", multer().single("profileAvatar"), async(req, res, next) => {
+    try {
+        await saveAvatar(req.file.originalname, req.file.buffer)
+        res.status(201).send("OK")
+    } catch (error) {
+
+    }
+    next(error)
+})
+
+
+
 
 
 // PUT METHOD

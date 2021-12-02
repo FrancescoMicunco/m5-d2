@@ -10,6 +10,7 @@ console.log("this is the path", postsPath)
 const usersPath = join(dirname(fileURLToPath(
     import.meta.url)), "../data")
 
+const publicFolder = join(process.cwd(), "./public/img/authors")
 
 const postsPathJSON = join(postsPath, "postsDB.json")
 
@@ -21,3 +22,7 @@ export const writePost = content => writeJSON(postsPathJSON, content)
 
 export const getUser = () => readJSON(usersPathJSON)
 export const writeUser = content => writeJSON(usersPathJSON, content)
+
+export const saveAvatar = (filename, contentAsABuffer) => {
+    join(writeFile(publicFolder, filename), contentAsABuffer)
+}
