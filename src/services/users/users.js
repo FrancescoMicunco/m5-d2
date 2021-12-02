@@ -82,18 +82,12 @@ usersRouter.post("/:id/upLoadAvatar", multer().single("profileAvatar"), async(re
     next(error)
 })
 
-
-
-
-
 // PUT METHOD
 // =============================
 usersRouter.put("/:userid", async(req, res, next) => {
     const usersArray = await getUser()
     try {
         const findIndex = contentFileArray.findIndex(e => e.id === req.params.userid)
-
-
         usersArray[findIndex] = {
             ...usersArray[findIndex],
             ...req.body,
@@ -103,9 +97,7 @@ usersRouter.put("/:userid", async(req, res, next) => {
         res.send(updateUser[findIndex])
     } catch (error) {
         next(error)
-
     }
-
 })
 
 
@@ -121,7 +113,6 @@ usersRouter.delete("/:userid", async(req, res, next) => {
         console.log("there is an error")
     }
     next(error)
-
 })
 
 export default usersRouter

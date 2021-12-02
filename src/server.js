@@ -9,6 +9,20 @@ import {
     notFound,
     genericErr
 } from './errorHandler.js'
+import {
+    fileURLToPath
+} from "url";
+import {
+    dirname,
+    join
+} from "path";
+
+const publicPath = join(
+    dirname(fileURLToPath(
+        import.meta.url)),
+    "../public"
+);
+console.log("public path", publicPath);
 
 const server = express()
 const port = 3001
@@ -19,11 +33,14 @@ const port = 3001
 
 
 
-//================ END POINT ====================
-//===============================================
+
 
 server.use(cors())
 server.use(express.json())
+server.use(express.static(publicPath))
+    //================ END POINT ====================
+    //===============================================
+
 
 server.use("/users", usersRouter)
 server.use("/posts", blogpostsRouter)
@@ -44,4 +61,4 @@ server.use(genericErr)
 
 console.table(listEndpoints(server))
 
-server.listen(port, () => {})
+server.listen(port, () => { console.log("server is running") })
