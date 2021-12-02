@@ -1,7 +1,7 @@
 import express from 'express'
 import uniqid from "uniqid"
 import createHttpError from "http-errors"
-import { postValidation } from './validation.js'
+import { postValidation } from '../../lib/validation.js'
 import { validationResult } from 'express-validator'
 import { getPost, writePost } from '../../lib/functions.js'
 
@@ -93,7 +93,6 @@ blogpostsRouter.put("/:id", async(req, res, next) => {
 
 // =================  DELETE ==============
 // =====================================
-
 
 blogpostsRouter.delete("/:id", async(req, res, next) => {
     try {

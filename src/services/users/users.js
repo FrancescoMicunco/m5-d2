@@ -1,77 +1,71 @@
-import fs from 'fs'
 import express from 'express'
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
+import { getUser, writeUser } from '../../lib/functions.js'
+import createHttpError from "http-errors"
+import { postValidation } from '../../lib/validation.js '
+import { validationResult } from 'express-validator'
 import uniqid from "uniqid"
 
 const usersRouter = express.Router()
 
 
-//  access db file
-const userPath = join(dirname(fileURLToPath(
-    import.meta.url)), "usersDb.json")
-
-// get user
-const getUser = () => JSON.parse(fs.readFileSync(userPath))
-
-// write user
-
-const writeUser = content => fs.writeFileSync(userPath, JSON.stringify(content))
 
 
 // GET METHOD
 // =============================
 
-usersRouter.get("/", (req, res, next) => {
+usersRouter.get("/", async(req, res, next) => {
     try {
-        const usersArray = getUser()
+        const usersArray = await getUser()
         res.send(usersArray)
     } catch (error) {
-        console.log("there is an error")
+        next(error)
     }
 
 })
 
 // GET METHOD specific ID
 // =============================
-usersRouter.get("/:userid", (req, res, next) => {
+usersRouter.get("/:userid", async(req, res, next) => {
     try {
-        const usersArray = getUser()
-        const user = usersArray.find(e => e.id === req.params.userid)
+        const usersArray = await getUser()
+        console.log(usersArray)
+        const user = usersArray.find(e => e._id === req.params.userid)
         if (user) {
             res.send(user)
         } else {
-            console.log("user doesn't exist")
+            next(createHttpError(404, 'Not found!'))
         }
 
     } catch (error) {
-        console.log("there is an error")
+        next(error)
     }
 })
 
 
 // POST METHOD
 // =============================
-usersRouter.post("/", (req, res, next) => {
+usersRouter.post("/", postValidation, async(req, res, next) => {
     const usersArray = getUser()
     try {
-        const { name, surname, email, date_of_birt } = req.body;
-        const newUser = {
-            id: uniqid(),
-            name,
-            surname,
-            email,
-            date_of_birt,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            avatar: `https://ui-avatars.com/api/?name=${name}+${surname}`
+        const errorsList = validationResult(req)
+        if (!errorsList.isEmpty()) {
+            next(createHttpError(400, 'Bad Request!'))
+        } else {
+            const { name, surname, email, date_of_birt } = req.body;
+            const newUser = {
+                id: uniqid(),
+                ...req.body,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                avatar: `https://ui-avatars.com/api/?name=${name}+${surname}`
+            }
+
+            usersArray.push(newUser)
+            writeUser(usersArray)
+            res.status(201).send({
+                id: newUser.id
+            })
         }
-        console.log(newUser)
-        usersArray.push(newUser)
-        writeUser(usersArray)
-        res.status(201).send({
-            id: newUser.id
-        })
     } catch (error) {
 
     }
@@ -80,21 +74,21 @@ usersRouter.post("/", (req, res, next) => {
 
 // PUT METHOD
 // =============================
-usersRouter.put("/:userid", (req, res, next) => {
-    const usersArray = getUser()
+usersRouter.put("/:userid", async(req, res, next) => {
+    const usersArray = await getUser()
     try {
         const findIndex = contentFileArray.findIndex(e => e.id === req.params.userid)
-        const userToModify = usersArray[findIndex]
-        const userUpdated = req.body
-        const updateUser = {
-            ...userToModify,
-            ...userUpdated
+
+
+        usersArray[findIndex] = {
+            ...usersArray[findIndex],
+            ...req.body,
+            updatedAt: new Date()
         }
-        usersArray[index] = updateUser
         writeUser(usersArray)
-        res.send(updateUser)
+        res.send(updateUser[findIndex])
     } catch (error) {
-        console.log("there is an error")
+        next(error)
 
     }
 
@@ -103,15 +97,16 @@ usersRouter.put("/:userid", (req, res, next) => {
 
 // DELETE METHOD
 // =============================
-usersRouter.delete("/:userid", (req, res, next) => {
+usersRouter.delete("/:userid", async(req, res, next) => {
     try {
-        const usersArray = getUser()
-        usersArray.filter(e => e.id !== req.params.userid)
+        const usersArray = await getUser()
+        const indexDeletingUser = usersArray.filter(e => e.id !== req.params.userid)
+        writePost(indexDeletingUser)
         res.status(204).send()
     } catch (error) {
         console.log("there is an error")
     }
-
+    next(error)
 
 })
 

@@ -7,8 +7,17 @@ const postsPath = join(dirname(fileURLToPath(
     import.meta.url)), "../data")
 console.log("this is the path", postsPath)
 
+const usersPath = join(dirname(fileURLToPath(
+    import.meta.url)), "../data")
+
+
 const postsPathJSON = join(postsPath, "postsDB.json")
 
-export const getPost = () => readJSON(postsPathJSON)
+const usersPathJSON = join(usersPath, "usersDB.json")
 
+
+export const getPost = () => readJSON(postsPathJSON)
 export const writePost = content => writeJSON(postsPathJSON, content)
+
+export const getUser = () => readJSON(usersPathJSON)
+export const writeUser = content => writeJSON(usersPathJSON, content)
