@@ -9,20 +9,8 @@ import {
     notFound,
     genericErr
 } from './errorHandler.js'
-import {
-    fileURLToPath
-} from "url";
-import {
-    dirname,
-    join
-} from "path";
 
-const publicPath = join(
-    dirname(fileURLToPath(
-        import.meta.url)),
-    "../public"
-);
-console.log("public path", publicPath);
+import { publicPath } from './lib/functions'
 
 const server = express()
 const port = 3001
