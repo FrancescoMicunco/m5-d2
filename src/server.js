@@ -10,18 +10,13 @@ import {
     genericErr
 } from './errorHandler.js'
 
-import { publicPath } from './lib/functions'
+import { publicPath } from '../src/lib/functions'
 
 const server = express()
 const port = 3001
-    // =================  MIDDELWARES ===============
-    //==============================================
 
-
-
-
-
-
+// =================  MIDDELWARES ===============
+//==============================================
 
 server.use(cors())
 server.use(express.json())

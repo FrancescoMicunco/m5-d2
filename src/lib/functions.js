@@ -7,8 +7,6 @@ const { readJSON, writeJSON, writeFile } = fs;
 
 const dataPath = join(dirname(fileURLToPath(
     import.meta.url)), "../data");
-console.log("this is the path", dataPath);
-
 
 const usersPath = join(dirname(fileURLToPath(
     import.meta.url)), "../data");
@@ -17,14 +15,12 @@ const usersPath = join(dirname(fileURLToPath(
 const dataPathJSON = join(dataPath, "postsDB.json");
 
 export const publicPath = join(process.cwd(), 'public');
-console.log("public path", publicPath);
-
 
 const usersPathJSON = join(usersPath, "usersDB.json");
 
-const authorsAvatar = join(publicFolder, 'authors')
+const authorsAvatar = join(publicPath, 'authors');
 
-const authorsCover = join(publicFolder, 'covers')
+const authorsCover = join(publicPath, 'covers');
 
 export const getPost = () => readJSON(dataPathJSON);
 export const writePost = (content) => writeJSON(dataPathJSON, content);
