@@ -9,20 +9,24 @@ import {
     notFound,
     genericErr
 } from './errorHandler.js'
+import {
+    dirname,
+    join
+} from "path";
 
-import { publicPath } from '../src/lib/functions'
+// import { publicPath } from '../src/lib/functions'
 
 const server = express()
 const port = 3001
-
-// =================  MIDDELWARES ===============
-//==============================================
+server.use(express.static(__dirname, '/public'))
+    // =================  MIDDELWARES ===============
+    //==============================================
 
 server.use(cors())
 server.use(express.json())
-server.use(express.static(publicPath))
-    //================ END POINT ====================
-    //===============================================
+
+//================ END POINT ====================
+//===============================================
 
 
 server.use("/users", usersRouter)
