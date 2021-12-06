@@ -18,7 +18,7 @@ import {
 
 const server = express()
 const port = 3001
-server.use(express.static(__dirname, '/public'))
+    // server.use(express.static(dirname, '/public'))
     // =================  MIDDELWARES ===============
     //==============================================
 
@@ -48,4 +48,4 @@ server.use(genericErr)
 
 console.table(listEndpoints(server))
 
-server.listen(port, () => { console.log("server is running") })
+server.listen(port, () => { console.log(`server is running on ${port}`) })

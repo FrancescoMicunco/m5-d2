@@ -4,6 +4,7 @@ import createHttpError from "http-errors"
 import uniqid from "uniqid"
 import multer from 'multer'
 
+
 const usersRouter = express.Router()
 
 // GET METHOD
@@ -27,8 +28,7 @@ usersRouter.get("/", async(req, res, next) => {
 usersRouter.get("/:id", async(req, res, next) => {
     try {
         const usersArray = await getUser()
-
-        const user = usersArray.find(e => e._id === req.params.id)
+        const user = usersArray.find(e => e.id === req.params.id)
         if (user) {
             res.send(user)
         } else {
@@ -41,7 +41,6 @@ usersRouter.get("/:id", async(req, res, next) => {
     }
     next(error)
 })
-
 
 // POST METHOD
 // =============================
@@ -61,9 +60,8 @@ usersRouter.post("/", async(req, res, next) => {
         res.status(201).send(
             newUser
         )
-
     } catch (error) {
-        res.send(500).send({
+        res.status(500).send({
             message: error.message
         })
     }
@@ -97,7 +95,7 @@ usersRouter.put("/:id/upLoadAvatar", multer().single("profileAvatar"), async(req
             res.send(changedUser)
         }
     } catch (error) {
-        res.send(500).send({
+        res.status(500).send({
             message: error.message
         })
 
@@ -108,23 +106,26 @@ usersRouter.put("/:id/upLoadAvatar", multer().single("profileAvatar"), async(req
 // PUT METHOD
 // =============================
 usersRouter.put("/:id", async(req, res, next) => {
-    const usersArray = await getUser()
+
     try {
+        const usersArray = await getUser()
         const findIndex = usersArray.findIndex(e => e.id === req.params.id)
+        console.log("this is the index...", findIndex)
         if (findIndex == -1) {
-            res.status(404)
+            createHttpError(404, "Not Founded!")
         } else {
-            usersArray[findIndex] = {
-                ...usersArray[findIndex],
+            const userToChange = usersArray[findIndex]
+            const changedUser = {
+                ...userToChange,
                 ...req.body,
                 avatar: `https://ui-avatars.com/api/?name=${req.body.name || authors[index].name}+${req.body.surname || authors[index].surname}`,
                 updatedAt: new Date()
             }
             await writeUser(usersArray)
-            res.send(updateUser[findIndex])
+            res.send("User updated!")
         }
     } catch (error) {
-        res.send(500).send({
+        res.status(500).send({
             message: error.message
         })
     }
@@ -141,7 +142,7 @@ usersRouter.delete("/:userid", async(req, res, next) => {
         writePost(indexDeletingUser)
         res.status(204).send()
     } catch (error) {
-        res.send(500).send({
+        res.status(500).send({
             message: error.message
         })
     }

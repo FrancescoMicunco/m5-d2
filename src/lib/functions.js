@@ -18,6 +18,7 @@ export const publicPath = join(process.cwd(), 'public');
 
 const usersPathJSON = join(usersPath, "usersDB.json");
 
+
 const authorsAvatar = join(publicPath, 'authors');
 
 const authorsCover = join(publicPath, 'covers');
