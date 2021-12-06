@@ -13,16 +13,23 @@ import {
     dirname,
     join
 } from "path";
+import createHttpError from "http-errors";
 
 // import { publicPath } from '../src/lib/functions'
 
 const server = express()
-const port = 3001
+const port = process.env.PORT
     // server.use(express.static(dirname, '/public'))
     // =================  MIDDELWARES ===============
     //==============================================
 
-server.use(cors())
+const whiteList = []
+const corsOption = {
+    origin: function(origin, next) {
+        if (whiteList.indexOf(origin) !== -1) { next(null, true) } else { next(error) }
+    }
+}
+server.use(cors(corsOption))
 server.use(express.json())
 
 //================ END POINT ====================

@@ -5,13 +5,14 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "nodemon -e js ./src/server.js"
+        "dev": "nodemon -e js -r dotenv/config ./src/server.js"
     },
     "type": "module",
     "keywords": [],
     "author": "Francesco Micunco",
     "license": "ISC",
     "devDependencies": {
+        "dotenv": "^10.0.0",
         "nodemon": "^2.0.15"
     },
     "repository": {
