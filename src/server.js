@@ -23,10 +23,10 @@ const port = process.env.PORT
     // =================  MIDDELWARES ===============
     //==============================================
 
-const whiteList = []
+const whiteList = [process.env.REACT_APP_FE_REMOTE_URL, process.env.REACT_APP_FE_LOCAL_URL]
 const corsOption = {
     origin: function(origin, next) {
-        if (whiteList.indexOf(origin) !== -1) { next(null, true) } else { next(error) }
+        if (!origin || whiteList.indexOf(origin) !== -1) { next(null, true) } else { next(new Error("Cors Error occurred!")) }
     }
 }
 server.use(cors(corsOption))
