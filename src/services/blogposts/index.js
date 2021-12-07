@@ -59,7 +59,7 @@ blogpostsRouter.get("/:id", async(req, res, next) => {
     try {
         const postsPath = await getPost()
         console.log(postsPath)
-        const post = postsPath.find(p => p._id === req.params.id)
+        const post = postsPath.find(p => p.id === req.params.id)
         console.log(post)
         if (post) {
             res.send(post)
@@ -77,7 +77,7 @@ blogpostsRouter.get("/:id", async(req, res, next) => {
 blogpostsRouter.put("/:id", async(req, res, next) => {
     try {
         const postsPath = await getPost()
-        const findIndex = postsPath.findIndex(e => e._id === req.params.id)
+        const findIndex = postsPath.findIndex(e => e.id === req.params.id)
         console.log(findIndex)
         postsPath[findIndex] = {
             ...postsPath[findIndex],
@@ -101,7 +101,7 @@ blogpostsRouter.put("/:id", async(req, res, next) => {
 blogpostsRouter.delete("/:id", async(req, res, next) => {
     try {
         const postsPath = await getPost()
-        const indexDeletingPost = postsPath.filter(e => e._id !== req.params.id)
+        const indexDeletingPost = postsPath.filter(e => e.id !== req.params.id)
         writePost(indexDeletingPost)
         res.status(204).send()
     } catch (error) {
