@@ -32,7 +32,6 @@ blogpostsRouter.post("/", postValidation, async(req, res, next) => {
             next(createHttpError(400, 'Bad Request!'))
         } else {
             const postsPath = await getPost()
-
             const newPost = {
                 "_id": uniqid(),
                 ...req.body,
