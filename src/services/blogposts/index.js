@@ -6,6 +6,7 @@ import { validationResult } from 'express-validator'
 import { getPost, writePost } from '../../lib/functions.js'
 import { CloudinaryStorage } from 'multer-storage-cloudinary'
 import { v2 as cloudinary } from 'cloudinary'
+import multer from 'multer'
 const blogpostsRouter = express.Router()
 
 const uploader = multer({
@@ -31,24 +32,20 @@ blogpostsRouter.get("/", async(req, res, next) => {
 // =====================================
 
 
-blogpostsRouter.post("/", postValidation, async(req, res, next) => {
+blogpostsRouter.post("/", uploader, async(req, res, next) => {
     try {
-        const errorsList = validationResult(req)
-        if (!errorsList.isEmpty()) {
-            next(createHttpError(400, 'Bad Request!'))
-        } else {
-            const postsPath = await getPost()
-            const newPost = {
-                "_id": uniqid(),
-                ...req.body,
-                "createdAt": new Date()
-            }
-            postsPath.push(newPost)
-            writePost(postsPath)
-            res.status(201).send({
-                id: newPost._id
-            })
+        const postsPath = await getPost()
+        const newPost = {
+            "_id": uniqid(),
+            ...req.body,
+            ...req.file,
+            "createdAt": new Date()
         }
+        postsPath.push(newPost)
+        writePost(postsPath)
+        res.status(201).send({
+            id: newPost._id
+        })
     } catch (error) {
         next(error)
     }
