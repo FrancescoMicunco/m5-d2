@@ -25,29 +25,29 @@ blogpostsRouter.get("/", async(req, res, next) => {
 // =====================================
 
 
-// blogpostsRouter.post("/", postValidation, async(req, res, next) => {
-//     try {
-//         const errorsList = validationResult(req)
-//         if (!errorsList.isEmpty()) {
-//             next(createHttpError(400, 'Bad Request!'))
-//         } else {
-//             const postsPath = await getPost()
+blogpostsRouter.post("/", postValidation, async(req, res, next) => {
+    try {
+        const errorsList = validationResult(req)
+        if (!errorsList.isEmpty()) {
+            next(createHttpError(400, 'Bad Request!'))
+        } else {
+            const postsPath = await getPost()
 
-//             const newPost = {
-//                 "_id": uniqid(),
-//                 ...req.body,
-//                 "createdAt": new Date()
-//             }
-//             postsPath.push(newPost)
-//             writePost(postsPath)
-//             res.status(201).send({
-//                 id: newPost._id
-//             })
-//         }
-//     } catch (error) {
-//         next(error)
-//     }
-// })
+            const newPost = {
+                "_id": uniqid(),
+                ...req.body,
+                "createdAt": new Date()
+            }
+            postsPath.push(newPost)
+            writePost(postsPath)
+            res.status(201).send({
+                id: newPost._id
+            })
+        }
+    } catch (error) {
+        next(error)
+    }
+})
 
 // =================  GET + ID ==============
 // ==========================================
