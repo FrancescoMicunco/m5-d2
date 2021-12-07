@@ -4,12 +4,18 @@ import createHttpError from "http-errors"
 import { postValidation } from '../../lib/validation.js'
 import { validationResult } from 'express-validator'
 import { getPost, writePost } from '../../lib/functions.js'
-
+import { CloudinaryStorage } from 'multer-storage-cloudinary'
+import { v2 as cloudinary } from 'cloudinary'
 const blogpostsRouter = express.Router()
 
-
-// =================  GET ==============
-// =====================================
+const uploader = multer({}
+storage: new CloudinaryStorage({
+    cloudinary,
+    params: { folder: "strive-folder" }
+})
+}).single("file")
+    // =================  GET ==============
+    // =====================================
 
 
 blogpostsRouter.get("/", async(req, res, next) => {
@@ -52,79 +58,79 @@ blogpostsRouter.post("/", postValidation, async(req, res, next) => {
 // ==========================================
 
 
-// blogpostsRouter.get("/:id", async(req, res, next) => {
-//     try {
-//         const postsPath = await getPost()
-//         console.log(postsPath)
-//         const post = postsPath.find(p => p._id === req.params.id)
-//         console.log(post)
-//         if (post) {
-//             res.send(post)
-//         } else {
-//             next(createHttpError(404, 'Not found!'))
-//         }
+blogpostsRouter.get("/:id", async(req, res, next) => {
+    try {
+        const postsPath = await getPost()
+        console.log(postsPath)
+        const post = postsPath.find(p => p._id === req.params.id)
+        console.log(post)
+        if (post) {
+            res.send(post)
+        } else {
+            next(createHttpError(404, 'Not found!'))
+        }
 
-//     } catch (error) {
-//         next(error)
-//     }
-// })
+    } catch (error) {
+        next(error)
+    }
+})
 
 // =================  PUT ==============
 // =====================================
-// blogpostsRouter.put("/:id", async(req, res, next) => {
-//     try {
-//         const postsPath = await getPost()
-//         const findIndex = postsPath.findIndex(e => e._id === req.params.id)
-//         console.log(findIndex)
-//         postsPath[findIndex] = {
-//             ...postsPath[findIndex],
-//             ...req.body,
-//             updatedAt: new Date()
-//         }
-//         writePost(postsPath)
-//         res.send(postsPath[findIndex])
+blogpostsRouter.put("/:id", async(req, res, next) => {
+        try {
+            const postsPath = await getPost()
+            const findIndex = postsPath.findIndex(e => e._id === req.params.id)
+            console.log(findIndex)
+            postsPath[findIndex] = {
+                ...postsPath[findIndex],
+                ...req.body,
+                updatedAt: new Date()
+            }
+            writePost(postsPath)
+            res.send(postsPath[findIndex])
 
-//     } catch (error) {
-//         next(error)
-//     }
-// })
-// =================  PATCH ==============
-// =====================================
-// blogpostsRouter.patch("/:id", async(req, res, next) => {
-//     try {
-//         const postsPath = await getPost()
-//         const findIndex = postsPath.findIndex(e => e._id === req.params.id)
-//         console.log(findIndex)
-//         postsPath[findIndex] = {
-//             ...postsPath[findIndex],
-//             ...req.body,
-//             updatedAt: new Date()
-//         }
-//         writePost(postsPath)
-//         res.send(postsPath[findIndex])
+        } catch (error) {
+            next(error)
+        }
+    })
+    // =================  PATCH ==============
+    // =====================================
+blogpostsRouter.patch("/:id", async(req, res, next) => {
+    try {
+        const postsPath = await getPost()
+        const findIndex = postsPath.findIndex(e => e._id === req.params.id)
+        console.log(findIndex)
+        postsPath[findIndex] = {
+            ...postsPath[findIndex],
+            ...req.body,
+            updatedAt: new Date()
+        }
+        writePost(postsPath)
+        res.send(postsPath[findIndex])
 
-//     } catch (error) {
-//         next(error)
-//     }
-// })
+    } catch (error) {
+        next(error)
+    }
+})
 
 
 
 // =================  DELETE ==============
 // =====================================
 
-// blogpostsRouter.delete("/:id", async(req, res, next) => {
-//     try {
-//         const postsPath = await getPost()
-//         const indexDeletingPost = postsPath.filter(e => e._id !== req.params.id)
-//         writePost(indexDeletingPost)
-//         res.status(204).send()
-//     } catch (error) {
+blogpostsRouter.delete("/:id", async(req, res, next) => {
+    try {
+        const postsPath = await getPost()
+        const indexDeletingPost = postsPath.filter(e => e._id !== req.params.id)
+        writePost(indexDeletingPost)
+        res.status(204).send()
+    } catch (error) {
 
-//     }
+    }
 
-//     next(error)
-// })
+    next(error)
+})
 
 
 export default blogpostsRouter
