@@ -75,25 +75,6 @@ blogpostsRouter.get("/:id", async(req, res, next) => {
 // =================  PUT ==============
 // =====================================
 blogpostsRouter.put("/:id", async(req, res, next) => {
-        try {
-            const postsPath = await getPost()
-            const findIndex = postsPath.findIndex(e => e._id === req.params.id)
-            console.log(findIndex)
-            postsPath[findIndex] = {
-                ...postsPath[findIndex],
-                ...req.body,
-                updatedAt: new Date()
-            }
-            writePost(postsPath)
-            res.send(postsPath[findIndex])
-
-        } catch (error) {
-            next(error)
-        }
-    })
-    // =================  PATCH ==============
-    // =====================================
-blogpostsRouter.patch("/:id", async(req, res, next) => {
     try {
         const postsPath = await getPost()
         const findIndex = postsPath.findIndex(e => e._id === req.params.id)
@@ -110,6 +91,7 @@ blogpostsRouter.patch("/:id", async(req, res, next) => {
         next(error)
     }
 })
+
 
 
 
