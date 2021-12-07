@@ -8,12 +8,12 @@ import { CloudinaryStorage } from 'multer-storage-cloudinary'
 import { v2 as cloudinary } from 'cloudinary'
 const blogpostsRouter = express.Router()
 
-const uploader = multer({}
-storage: new CloudinaryStorage({
-    cloudinary,
-    params: { folder: "strive-folder" }
-})
-}).single("file")
+const uploader = multer({
+        storage: new CloudinaryStorage({
+            cloudinary,
+            params: { folder: "strive-folder" }
+        })
+    }).single("file")
     // =================  GET ==============
     // =====================================
 
