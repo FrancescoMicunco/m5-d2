@@ -2,10 +2,24 @@ import express from 'express'
 import { getUser, writeUser, getPost, writePost, saveAvatar } from '../../lib/functions.js'
 import createHttpError from "http-errors"
 import uniqid from "uniqid"
+import {
+    CloudinaryStorage
+} from 'multer-storage-cloudinary'
+import {
+    v2 as cloudinary
+} from 'cloudinary'
 import multer from 'multer'
 
-
 const usersRouter = express.Router()
+
+const uploader = multer({
+    storage: new CloudinaryStorage({
+        cloudinary,
+        params: {
+            folder: "strive-folder"
+        }
+    })
+}).single("file")
 
 // GET METHOD
 // =============================
@@ -69,9 +83,9 @@ usersRouter.post("/", async(req, res, next) => {
 })
 
 
-// PUT METHOD for AVATAR
+// Patch METHOD for AVATAR
 // =============================
-usersRouter.put("/:id/upLoadAvatar", multer().single("profileAvatar"), async(req, res, next) => {
+usersRouter.put("/:id/upLoadAvatar", uploader, async(req, res, next) => {
 
     try {
         const usersArray = await getUser()
@@ -102,6 +116,31 @@ usersRouter.put("/:id/upLoadAvatar", multer().single("profileAvatar"), async(req
     }
     next(error)
 })
+
+// =================  PATCH ==============
+// =====================================
+usersRouter.patch("/:id", async(req, res, next) => {
+    try {
+        const postsPath = await getPost()
+        const findIndex = postsPath.findIndex(e => e.id === req.params.id)
+        postsPath[findIndex] = {
+            ...postsPath[findIndex],
+            ...req.body,
+            updatedAt: new Date()
+        }
+        writePost(postsPath)
+        res.send(postsPath[findIndex])
+
+    } catch (error) {
+        next(error)
+    }
+})
+
+
+
+
+
+
 
 // PUT METHOD
 // =============================

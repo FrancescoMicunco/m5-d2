@@ -9,14 +9,9 @@ import { v2 as cloudinary } from 'cloudinary'
 import multer from 'multer'
 const blogpostsRouter = express.Router()
 
-const uploader = multer({
-        storage: new CloudinaryStorage({
-            cloudinary,
-            params: { folder: "strive-folder" }
-        })
-    }).single("file")
-    // =================  GET ==============
-    // =====================================
+
+// =================  GET ==============
+// =====================================
 
 
 blogpostsRouter.get("/", async(req, res, next) => {
@@ -32,7 +27,7 @@ blogpostsRouter.get("/", async(req, res, next) => {
 // =====================================
 
 
-blogpostsRouter.post("/", uploader, async(req, res, next) => {
+blogpostsRouter.post("/", async(req, res, next) => {
     try {
         const postsPath = await getPost()
         const newPost = {
