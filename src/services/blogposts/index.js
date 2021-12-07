@@ -89,6 +89,27 @@ blogpostsRouter.get("/", async(req, res, next) => {
 //         next(error)
 //     }
 // })
+// =================  PATCH ==============
+// =====================================
+// blogpostsRouter.patch("/:id", async(req, res, next) => {
+//     try {
+//         const postsPath = await getPost()
+//         const findIndex = postsPath.findIndex(e => e._id === req.params.id)
+//         console.log(findIndex)
+//         postsPath[findIndex] = {
+//             ...postsPath[findIndex],
+//             ...req.body,
+//             updatedAt: new Date()
+//         }
+//         writePost(postsPath)
+//         res.send(postsPath[findIndex])
+
+//     } catch (error) {
+//         next(error)
+//     }
+// })
+
+
 
 // =================  DELETE ==============
 // =====================================
