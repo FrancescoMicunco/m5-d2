@@ -4,6 +4,7 @@ import createHttpError from "http-errors"
 import { postValidation } from '../../lib/validation.js'
 import { validationResult } from 'express-validator'
 import { getPost, writePost } from '../../lib/functions.js'
+import { getReadble } from '../../lib/pdf.js'
 import { CloudinaryStorage } from 'multer-storage-cloudinary'
 import { v2 as cloudinary } from 'cloudinary'
 import multer from 'multer'
@@ -37,7 +38,7 @@ blogpostsRouter.post("/", async(req, res, next) => {
             "createdAt": new Date()
         }
         postsPath.push(newPost)
-        writePost(postsPath)
+        await writePost(postsPath)
         res.status(201).send({
             id: newPost._id
         })
@@ -54,7 +55,7 @@ blogpostsRouter.get("/:id", async(req, res, next) => {
     try {
         const postsPath = await getPost()
         console.log(postsPath)
-        const post = postsPath.find(p => p.id === req.params.id)
+        const post = postsPath.find(p => p._id === req.params.id)
         console.log(post)
         if (post) {
             res.send(post)
@@ -67,19 +68,38 @@ blogpostsRouter.get("/:id", async(req, res, next) => {
     }
 })
 
+// =================  GET + ID + pdf ==============
+// ==========================================
+
+blogpostsRouter.get("/:id/pdf", async(req, res, next) => {
+    try {
+        res.setHeader(
+            "Content-Disposition", "attachement; filename=newfile.pdf"
+
+        )
+        const source = getReadble()
+        const destination = res
+        pipeline(source, destination, err => {
+            if (err) next("it's not ok")
+        })
+    } catch (error) {
+        next("it's not ok")
+    }
+})
+
 // =================  PUT ==============
 // =====================================
 blogpostsRouter.put("/:id", async(req, res, next) => {
     try {
         const postsPath = await getPost()
-        const findIndex = postsPath.findIndex(e => e.id === req.params.id)
+        const findIndex = postsPath.findIndex(e => e._id === req.params.id)
         console.log(findIndex)
         postsPath[findIndex] = {
             ...postsPath[findIndex],
             ...req.body,
             updatedAt: new Date()
         }
-        writePost(postsPath)
+        await writePost(postsPath)
         res.send(postsPath[findIndex])
 
     } catch (error) {
@@ -93,8 +113,8 @@ blogpostsRouter.put("/:id", async(req, res, next) => {
 blogpostsRouter.delete("/:id", async(req, res, next) => {
     try {
         const postsPath = await getPost()
-        const indexDeletingPost = postsPath.filter(e => e.id !== req.params.id)
-        writePost(indexDeletingPost)
+        const indexDeletingPost = postsPath.filter(e => e._id !== req.params.id)
+        await writePost(indexDeletingPost)
         res.status(204).send()
     } catch (error) {
 

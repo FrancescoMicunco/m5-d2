@@ -14,7 +14,7 @@ import {
     join
 } from "path";
 import createHttpError from "http-errors";
-import pdfRouter from "./services/filesRouter/pdfRoute.js";
+
 
 // import { publicPath } from '../src/lib/functions'
 
@@ -39,7 +39,7 @@ server.use(express.json())
 
 server.use("/users", usersRouter)
 server.use("/posts", blogpostsRouter)
-server.use("/downloadPDF", pdfRouter)
+
 
 // ===================  ERROR =======================
 //===================================================

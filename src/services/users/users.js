@@ -33,7 +33,7 @@ usersRouter.get("/", async(req, res, next) => {
             message: error.message
         })
     }
-    next(error)
+    next()
 
 })
 
@@ -42,7 +42,8 @@ usersRouter.get("/", async(req, res, next) => {
 usersRouter.get("/:id", async(req, res, next) => {
     try {
         const usersArray = await getUser()
-        const user = usersArray.find(e => e.id === req.params.id)
+        const user = usersArray.find(e => e._id === req.params.id)
+        console.log("this is the user", user)
         if (user) {
             res.send(user)
         } else {
@@ -122,7 +123,7 @@ usersRouter.post("/", async(req, res, next) => {
 usersRouter.patch("/:id", async(req, res, next) => {
     try {
         const postsPath = await getPost()
-        const findIndex = postsPath.findIndex(e => e.id === req.params.id)
+        const findIndex = postsPath.findIndex(e => e._id === req.params.id)
         postsPath[findIndex] = {
             ...postsPath[findIndex],
             ...req.body,
@@ -148,16 +149,17 @@ usersRouter.put("/:id", async(req, res, next) => {
 
     try {
         const usersArray = await getUser()
-        const findIndex = usersArray.findIndex(e => e.id === req.params.id)
+        const findIndex = usersArray.findIndex(e => e._id === req.params.id)
         console.log("this is the index...", findIndex)
         if (findIndex == -1) {
             createHttpError(404, "Not Founded!")
         } else {
             const userToChange = usersArray[findIndex]
+            console.log(userToChange)
             const changedUser = {
                 ...userToChange,
                 ...req.body,
-                avatar: `https://ui-avatars.com/api/?name=${req.body.name || authors[index].name}+${req.body.surname || authors[index].surname}`,
+                avatar: `https://ui-avatars.com/api/?name=${req.body.name || usersArray[index].name}+${req.body.surname || users[index].surname}`,
                 updatedAt: new Date()
             }
             await writeUser(usersArray)
@@ -177,7 +179,7 @@ usersRouter.put("/:id", async(req, res, next) => {
 usersRouter.delete("/:userid", async(req, res, next) => {
     try {
         const usersArray = await getUser()
-        const indexDeletingUser = usersArray.filter(e => e.id !== req.params.userid)
+        const indexDeletingUser = usersArray.filter(e => e._id !== req.params.userid)
         writePost(indexDeletingUser)
         res.status(204).send()
     } catch (error) {
