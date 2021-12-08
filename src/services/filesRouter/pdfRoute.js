@@ -12,13 +12,14 @@ const pdfRouter = express.Router()
 pdfRouter.get("/downloadPDF", async(req, res, next) => {
     try {
         res.setHeader(
-            "Content-Disposition", "attachement; filename="
+            "Content-Disposition", "attachement; filename=newfile.pdf"
+
         )
-        const source = getReadble({ file: "name" })
+        const source = getReadble()
         const destination = res
         pipeline(source, destination, err => {
-            if (err) console.log(err)
-            console.log("stream OK")
+            if (err) next(err)
+
         })
     } catch (error) {
 

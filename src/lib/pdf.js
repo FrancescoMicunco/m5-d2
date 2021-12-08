@@ -74,5 +74,5 @@ for free resources. \n\n`,
 
      const pdfDoc = printer.createPdfKitDocument(docDefinition, options);
      pdfDoc.end();
-     console.log(data)
+     return pdfDoc
  }
