@@ -14,11 +14,12 @@ import {
     join
 } from "path";
 import createHttpError from "http-errors";
+import pdfRouter from "./services/filesRouter/pdfRoute.js";
 
 // import { publicPath } from '../src/lib/functions'
 
 const server = express()
-const port = process.env.PORT
+const port = process.env.PORT || 3001
     // server.use(express.static(dirname, '/public'))
     // =================  MIDDELWARES ===============
     //==============================================
@@ -38,6 +39,7 @@ server.use(express.json())
 
 server.use("/users", usersRouter)
 server.use("/posts", blogpostsRouter)
+server.use("/downloadPDF", pdfRouter)
 
 // ===================  ERROR =======================
 //===================================================

@@ -3,6 +3,7 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
 
+
 const { readJSON, writeJSON, writeFile } = fs;
 
 const dataPath = join(dirname(fileURLToPath(
@@ -46,7 +47,3 @@ export const writeUser = (content) => writeJSON(usersPathJSON, content);
 //         console.log(error)
 //     }
 // };
-
-export const saveCover = (filename, contentAsABuffer) => {
-    join(writeFile(authorsCover, filename), contentAsABuffer);
-};
