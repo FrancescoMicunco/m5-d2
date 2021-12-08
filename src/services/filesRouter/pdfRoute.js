@@ -22,7 +22,7 @@ pdfRouter.get("/downloadPDF", async(req, res, next) => {
 
         })
     } catch (error) {
-
+        next(error)
     }
 })
 
