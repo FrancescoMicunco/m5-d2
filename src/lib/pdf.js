@@ -18,7 +18,7 @@ export const getReadble = data => {
 
     const docDefinition = {
         content: [{
-                text: 'This page has been created with Stream Method',
+                text: 'I was a salesman 6 months ago, and now I am a professional web developer',
                 style: 'header'
             },
             {
@@ -30,9 +30,16 @@ export const getReadble = data => {
                 text: 'Subheader 1 - using subheader style',
                 style: 'subheader'
             },
-            'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam posset, eveniunt specie deorsus efficiat sermone instituendarum fuisse veniat, eademque mutat debeo. Delectet plerique protervi diogenem dixerit logikh levius probabo adipiscuntur afficitur, factis magistra inprobitatem aliquo andriam obiecta, religionis, imitarentur studiis quam, clamat intereant vulgo admonitionem operis iudex stabilitas vacillare scriptum nixam, reperiri inveniri maestitiam istius eaque dissentias idcirco gravis, refert suscipiet recte sapiens oportet ipsam terentianus, perpauca sedatio aliena video.',
-            'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam posset, eveniunt specie deorsus efficiat sermone instituendarum fuisse veniat, eademque mutat debeo. Delectet plerique protervi diogenem dixerit logikh levius probabo adipiscuntur afficitur, factis magistra inprobitatem aliquo andriam obiecta, religionis, imitarentur studiis quam, clamat intereant vulgo admonitionem operis iudex stabilitas vacillare scriptum nixam, reperiri inveniri maestitiam istius eaque dissentias idcirco gravis, refert suscipiet recte sapiens oportet ipsam terentianus, perpauca sedatio aliena video.',
-            'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Confectum ponit legam, perferendis nomine miserum, animi. Moveat nesciunt triari naturam posset, eveniunt specie deorsus efficiat sermone instituendarum fuisse veniat, eademque mutat debeo. Delectet plerique protervi diogenem dixerit logikh levius probabo adipiscuntur afficitur, factis magistra inprobitatem aliquo andriam obiecta, religionis, imitarentur studiis quam, clamat intereant vulgo admonitionem operis iudex stabilitas vacillare scriptum nixam, reperiri inveniri maestitiam istius eaque dissentias idcirco gravis, refert suscipiet recte sapiens oportet ipsam terentianus, perpauca sedatio aliena video.\n\n',
+            `Ervins, one of the fresh graduates from Strive School latest Web Development program, joined the Latvia - based digital agency RevPanda three weeks earlier.Were you to ask him at the beginning of the Covid - 19 pandemic what he'd be doing now, the answer would have been very different!Read on below to learn about Ervins's story and how the soft skills he has gained 
+            throughout his career thus far, coupled with the technical training received at Strive, has helped him land a job as a web developer.
+            `,
+            `As a salesman in the travel industry, when the pandemic hit, 
+Ervins found himself with a lot of free time. Learning to code was something that rested in the 
+back of Ervins's mind for a while, but he never got around to systematically taking on this 
+challenge. With the unexpected downtime, Ervins decided that instead of sitting at home and 
+rolling his thumbs, now was the perfect opportunity to get on with learning a new skill.Like 
+everyone new to programming, the first thing Ervins did was do some simple Google searches 
+for free resources. \n\n`,
             {
                 text: 'Subheader 2 - using subheader style',
                 style: 'subheader'
