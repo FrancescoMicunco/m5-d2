@@ -16,7 +16,10 @@ pdfRouter.get("/downloadPDF", async(req, res, next) => {
         )
         const source = getReadble({ file: "name" })
         const destination = res
-        pipeline(source, destination)
+        pipeline(source, destination, err => {
+            if (err) console.log(err)
+            console.log("stream OK")
+        })
     } catch (error) {
 
     }
