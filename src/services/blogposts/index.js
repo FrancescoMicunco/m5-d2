@@ -75,7 +75,6 @@ blogpostsRouter.get("/:id/pdf", async(req, res, next) => {
     try {
         res.setHeader(
             "Content-Disposition", "attachement; filename=newfile.pdf"
-
         )
         const source = getReadble()
         const destination = res
@@ -100,7 +99,7 @@ blogpostsRouter.put("/:id", async(req, res, next) => {
             updatedAt: new Date()
         }
         await writePost(postsPath)
-        res.send(postsPath[findIndex])
+        res.send("Post updated!")
 
     } catch (error) {
         next(error)

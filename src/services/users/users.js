@@ -43,8 +43,9 @@ usersRouter.get("/:id", async(req, res, next) => {
     try {
         const usersArray = await getUser()
         const user = usersArray.find(e => e._id === req.params.id)
-        console.log("this is the user", user)
+
         if (user) {
+            console.log("user to get", user)
             res.send(user)
         } else {
             next(createHttpError(404, 'Not found!'))
@@ -118,31 +119,6 @@ usersRouter.post("/", async(req, res, next) => {
 //     next(error)
 // })
 
-// =================  PATCH ==============
-// =====================================
-usersRouter.patch("/:id", async(req, res, next) => {
-    try {
-        const postsPath = await getPost()
-        const findIndex = postsPath.findIndex(e => e._id === req.params.id)
-        postsPath[findIndex] = {
-            ...postsPath[findIndex],
-            ...req.body,
-            updatedAt: new Date()
-        }
-        writePost(postsPath)
-        res.send(postsPath[findIndex])
-
-    } catch (error) {
-        next(error)
-    }
-})
-
-
-
-
-
-
-
 // PUT METHOD
 // =============================
 usersRouter.put("/:id", async(req, res, next) => {
@@ -155,7 +131,6 @@ usersRouter.put("/:id", async(req, res, next) => {
             createHttpError(404, "Not Founded!")
         } else {
             const userToChange = usersArray[findIndex]
-            console.log(userToChange)
             const changedUser = {
                 ...userToChange,
                 ...req.body,
