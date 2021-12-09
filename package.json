@@ -17,6 +17,7 @@
         "nodemon": "^2.0.15"
     },
     "dependencies": {
+        "@sendgrid/mail": "^7.6.0",
         "cloudinary": "^1.27.1",
         "cloudinary-multer": "^1.0.2",
         "cors": "^2.8.5",
@@ -29,6 +30,7 @@
         "multer-storage-cloudinary": "^4.0.0",
         "pdfmake": "^0.2.4",
         "uniqid": "^5.4.0",
+        "util": "^0.12.4",
         "zlib": "^1.0.5"
     }
 }
