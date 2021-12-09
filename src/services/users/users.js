@@ -9,6 +9,7 @@ import {
     v2 as cloudinary
 } from 'cloudinary'
 import multer from 'multer'
+import { sendRegistrationEmail } from '../../lib/email.js'
 
 const usersRouter = express.Router()
 
@@ -163,6 +164,28 @@ usersRouter.delete("/:userid", async(req, res, next) => {
         })
     }
     next(error)
+})
+
+usersRouter.post("/form", async(req, res, next) => {
+    try {
+
+        const { email } = req.body
+
+        const usersArray = await getUser()
+        const newUser = {
+            "_id": uniqid(),
+            ...req.body,
+            "createdAt": new Date(),
+            "updatedAt": new Date(),
+        }
+        usersArray.push(newUser)
+        await writeUser(usersArray)
+        await sendRegistrationEmail(email)
+        res.send({ message: "done" })
+
+    } catch (error) {
+        next(error)
+    }
 })
 
 export default usersRouter
