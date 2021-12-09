@@ -10,6 +10,11 @@ import {
 } from 'cloudinary'
 import multer from 'multer'
 import { sendRegistrationEmail } from '../../lib/email.js'
+import {
+    upload,
+    uploadFile
+} from '../../lib/upload.js'
+
 
 const usersRouter = express.Router()
 
@@ -86,39 +91,36 @@ usersRouter.post("/", async(req, res, next) => {
 })
 
 
-// Patch METHOD for AVATAR
+// Put METHOD for AVATAR
 // =============================
-// usersRouter.put("/:id/upLoadAvatar", uploader, async(req, res, next) => {
+usersRouter.put("/:id/upLoadAvatar", upload.single('avatar'), uploadFile, async(req, res, next) => {
 
-//     try {
-//         const usersArray = await getUser()
-//         const fileName = req.file.originalname
-//         const extension = pathextname(fileName)
+    try {
+        const usersArray = await getUser()
 
-//         const findIndex = contentFileArray.findIndex(e => e.id === req.params.id)
-//         if (findIndex == -1) {
-//             res.status(404).send({
-//                 message: `Author with ${req.params.id} is not found!`
-//             });
-//         } else {
-//             const changedUser = usersArray[findIndex]
-//             changedUser = {
-//                 ...usersArray[findIndex],
-//                 avatar: `http://localhost:3001/author/${req.params.id}.${extension}`,
-//                 id: req.params.id,
-//                 updatedAt: new Date()
-//             }
-//             await saveAvatar()
-//             res.send(changedUser)
-//         }
-//     } catch (error) {
-//         res.status(500).send({
-//             message: error.message
-//         })
+        // const fileName = req.file.originalname
+        // const extension = pathextname(fileName)
 
-//     }
-//     next(error)
-// })
+        const findIndex = usersArray.findIndex(e => e._id === req.params.id)
+        if (findIndex == -1) {
+            res.status(404).send({
+                message: `Author with ${req.params.id} is not found!`
+            });
+        } else {
+            const searchedUser = usersArray[findIndex]
+            changedUser = {
+                ...usersArray[findIndex],
+                updatedAt: new Date()
+            }
+            usersArray[findIndex] = changedUser
+            res.send("Done!")
+        }
+    } catch (error) {
+        res.status(500).send("General error")
+
+    }
+    next(error)
+})
 
 // PUT METHOD
 // =============================
