@@ -8,9 +8,9 @@ const filesRouter = express.Router()
 
 filesRouter.get("/downloadCSV", (req, res, next) => {
     try {
-        res.setHeader("Content-Disposition", "attachment; filename=books.csv")
+        res.setHeader("Content-Disposition", "attachment; filename=users.csv")
         const source = getUsersReadableStream()
-        transform = new json2csv.Transform({ fields: [] })
+        transform = new json2csv.Transform({ fields: ["id", "name", "surname", "email", "dateOfBirth", "avatar"] })
         const destination = res
         pipeline(source, transform, destination, err => {
             if (err) next(err)
