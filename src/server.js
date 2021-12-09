@@ -9,21 +9,26 @@ import {
     notFound,
     genericErr
 } from './errorHandler.js'
-import {
+import path, {
     dirname,
     join
+
 } from "path";
+import { fileURLToPath } from "url";
 import createHttpError from "http-errors";
 import filesRouter from './services/files/index.js'
 
 
-// import { publicPath } from '../src/lib/functions'
 
+const publicDir = path.join(dirname(fileURLToPath(
+    import.meta.url)), "../public/authors")
+console.log("this is Public dir", publicDir)
 const server = express()
 const port = process.env.PORT || 3001
-    // server.use(express.static(dirname, '/public'))
-    // =================  MIDDELWARES ===============
-    //==============================================
+server.use(express.static(publicDir))
+
+// =================  MIDDELWARES ===============
+//==============================================
 
 const whiteList = [process.env.REACT_APP_FE_REMOTE_URL, process.env.REACT_APP_FE_LOCAL_URL]
 const corsOption = {
