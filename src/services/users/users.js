@@ -18,14 +18,7 @@ import {
 
 const usersRouter = express.Router()
 
-const uploader = multer({
-    storage: new CloudinaryStorage({
-        cloudinary,
-        params: {
-            folder: "strive-folder"
-        }
-    })
-}).single("file")
+
 
 // GET METHOD
 // =============================
@@ -94,30 +87,28 @@ usersRouter.post("/", async(req, res, next) => {
 // Put METHOD for AVATAR
 // =============================
 usersRouter.put("/:id/upLoadAvatar", upload.single('avatar'), uploadFile, async(req, res, next) => {
-
     try {
         const usersArray = await getUser()
-
-        // const fileName = req.file.originalname
-        // const extension = pathextname(fileName)
-
         const findIndex = usersArray.findIndex(e => e._id === req.params.id)
-        if (findIndex == -1) {
+        console.log("THIS IS THE searched user", findIndex)
+        if (findIndex !== -1) {
+            const searched = usersArray[findIndex]
+            const changedUserAvatar = {
+                ...searched,
+                avatar: req.file,
+                updatedAt: new Date(),
+                id: req.params.id
+            }
+            usersArray[findIndex] = changedUser
+            await writeUser(usersArray)
+            res.send("Done!")
+        } else {
             res.status(404).send({
                 message: `Author with ${req.params.id} is not found!`
             });
-        } else {
-            const searchedUser = usersArray[findIndex]
-            changedUser = {
-                ...usersArray[findIndex],
-                updatedAt: new Date()
-            }
-            usersArray[findIndex] = changedUser
-            res.send("Done!")
         }
     } catch (error) {
         res.status(500).send("General error")
-
     }
     next(error)
 })
