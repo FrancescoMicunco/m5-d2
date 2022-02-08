@@ -3,6 +3,7 @@ import listEndpoints from "express-list-endpoints";
 import usersRouter from "./services/users/users.js"
 import blogpostsRouter from "./services/blogposts/index.js"
 import cors from "cors"
+import mongoose from "mongoose"
 import {
     badRequest,
     unauthorized,
