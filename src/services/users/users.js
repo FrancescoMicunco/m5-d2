@@ -14,6 +14,9 @@ import {
     upload,
     uploadFile
 } from '../../lib/upload.js'
+import { basicAuthMiddleware } from '../../auth/basic.js'
+import UserModel from './schema'
+
 
 
 const usersRouter = express.Router()
@@ -23,10 +26,12 @@ const usersRouter = express.Router()
 // GET METHOD
 // =============================
 
-usersRouter.get("/", async(req, res, next) => {
+usersRouter.get("/", basicAuthMiddleware, async(req, res, next) => {
     try {
-        const usersArray = await getUser()
-        res.send(usersArray)
+        const users = await UserModel.find()
+
+        // getUser()
+        res.send(users)
     } catch (error) {
         res.send(500).send({
             message: error.message
@@ -36,19 +41,38 @@ usersRouter.get("/", async(req, res, next) => {
 
 })
 
+// ========== /me ================
+
+usersRouter.get("/me", basicAuthMiddleware, async(req, res, next) => { res.send(req.user) })
+
+usersRouter.delete("/me", basicAuthMiddleware, async(req, res, next) => {
+    try {
+        await req.user.deleteOne()
+    } catch (error) {
+        next(error)
+    }
+})
+
+
 // GET METHOD specific ID
 // =============================
-usersRouter.get("/:id", async(req, res, next) => {
+usersRouter.get("/:id", basicAuthMiddleware, async(req, res, next) => {
     try {
-        const usersArray = await getUser()
-        const user = usersArray.find(e => e._id === req.params.id)
-
+        const usersArray = await UserModel.findById(req.params.id)
         if (user) {
-            console.log("user to get", user)
             res.send(user)
         } else {
-            next(createHttpError(404, 'Not found!'))
+            next(createHttpError(404, 'User not found'))
         }
+        // getUser()
+        // const user = usersArray.find(e => e._id === req.params.id)
+
+        // if (user) {
+        //     console.log("user to get", user)
+        //     res.send(user)
+        // } else {
+        //     next(createHttpError(404, 'Not found!'))
+        // }
     } catch (error) {
         res.send(500).send({
             message: error.message
@@ -59,21 +83,24 @@ usersRouter.get("/:id", async(req, res, next) => {
 
 // POST METHOD
 // =============================
-usersRouter.post("/", async(req, res, next) => {
+usersRouter.post("/", basicAuthMiddleware, async(req, res, next) => {
     try {
-        const usersArray = await getUser()
+        const usersArray = new UserModel(req.body)
+        const { id } = await user.save()
 
-        const newUser = {
-            "_id": uniqid(),
-            ...req.body,
-            avatar: req.body.avatar,
-            "createdAt": new Date(),
-            "updatedAt": new Date(),
-        }
-        usersArray.push(newUser)
-        await writeUser(usersArray)
-        res.status(201).send(
-            newUser
+        // getUser()
+
+        // const newUser = {
+        //     "_id": uniqid(),
+        //     ...req.body,
+        //     avatar: req.body.avatar,
+        //     "createdAt": new Date(),
+        //     "updatedAt": new Date(),
+        // }
+        // usersArray.push(newUser)
+        // await writeUser(usersArray)
+        res.status(201).send({ _id }
+            // newUser
         )
     } catch (error) {
         res.status(500).send({
@@ -115,24 +142,30 @@ usersRouter.put("/:id/upLoadAvatar", upload.single('avatar'), uploadFile, async(
 
 // PUT METHOD
 // =============================
-usersRouter.put("/:id", async(req, res, next) => {
+usersRouter.put("/:id", basicAuthMiddleware, async(req, res, next) => {
 
     try {
-        const usersArray = await getUser()
-        const findIndex = usersArray.findIndex(e => e._id === req.params.id)
-        console.log("this is the index...", findIndex)
-        if (findIndex == -1) {
-            createHttpError(404, "Not Founded!")
+        const usersArray = await UserModel.findByIdAndUpdate(req.params.id)
+            // getUser()
+            // const findIndex = usersArray.findIndex(e => e._id === req.params.id)
+            // console.log("this is the index...", findIndex)
+            // if (findIndex == -1) {
+            //     createHttpError(404, "Not Founded!")
+
+        if (usersArray) {
+            res.send(usersArray)
+
         } else {
-            const userToChange = usersArray[findIndex]
-            const changedUser = {
-                ...userToChange,
-                ...req.body,
-                avatar: `https://ui-avatars.com/api/?name=${req.body.name || usersArray[index].name}+${req.body.surname || users[index].surname}`,
-                updatedAt: new Date()
-            }
-            await writeUser(usersArray)
-            res.send("User updated!")
+            // const userToChange = usersArray[findIndex]
+            // const changedUser = {
+            //     ...userToChange,
+            //     ...req.body,
+            //     avatar: `https://ui-avatars.com/api/?name=${req.body.name || usersArray[index].name}+${req.body.surname || users[index].surname}`,
+            //     updatedAt: new Date()
+            // }
+            // await writeUser(usersArray)
+            // res.send("User updated!")
+            next(createHttpError(404, 'User not found'))
         }
     } catch (error) {
         res.status(500).send({
@@ -145,12 +178,16 @@ usersRouter.put("/:id", async(req, res, next) => {
 
 // DELETE METHOD
 // =============================
-usersRouter.delete("/:userid", async(req, res, next) => {
+usersRouter.delete("/:userid", basicAuthMiddleware, async(req, res, next) => {
     try {
-        const usersArray = await getUser()
+        const usersArray = await UserModel.findByIdAndDelete(req.params.id)
+            // getUser()
         const indexDeletingUser = usersArray.filter(e => e._id !== req.params.userid)
-        writePost(indexDeletingUser)
-        res.status(204).send()
+        if (usersArray)
+
+
+        // writePost(indexDeletingUser)
+            res.status(204).send()
     } catch (error) {
         res.status(500).send({
             message: error.message

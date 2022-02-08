@@ -1,7 +1,7 @@
 import createHttpError from "http-errors"
 import atob from "atob"
 
-export const basicAuthMMiddleware = async(req, res, next) => {
+export const basicAuthMiddleware = async(req, res, next) => {
     if (!req.headers.authorization) {
         next(createHttpError(401, "Please provide credentials in Authorization header!"));
     } else {
